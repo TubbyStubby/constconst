@@ -2,9 +2,19 @@
   "name": "constconst",
   "version": "0.0.1",
   "description": "For freezing and deep freezing objects which throws error on mutations. Making them actual constants. Uses proxies.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest"
+    "lint": "eslint .",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "jest",
+    "docs": "typedoc src/index.ts --githubPages false",
+    "release": "npm run build && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:TubbyStubby/constconst.git"
   },
   "keywords": [
     "deep-freeze",
@@ -13,7 +23,11 @@
     "const"
   ],
   "author": "TubbyStubby",
-  "license": "ISC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TubbyStubby/constconst/issues"
+  },
+  "homepage": "https://github.com/TubbyStubby/constconst#readme",
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
     "@types/jest": "^29.5.2",
@@ -29,5 +43,11 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
-  }
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "dist"
+  ]
 }
