@@ -4,5 +4,8 @@
   "initialVersions": {
     "constconst": "0.0.2"
   },
-  "changesets": []
+  "changesets": [
+    "odd-beds-suffer",
+    "tidy-islands-jam"
+  ]
 }
