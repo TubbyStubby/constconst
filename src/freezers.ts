@@ -1,6 +1,15 @@
-import { mutationHandler } from "./handlers";
+import { ConstConstError } from "./errors"
 
-type AnyFunction = (...args: unknown[]) => unknown
+export type Frozen<T> = 
+    T extends NonObject ? T :
+    T extends object ? FrozenObject<T> :
+    T
+
+export type DeepFrozen<T> =
+    T extends NonObject ? T :
+    T extends ReadonlyArray<infer R> ? DeepFrozenArray<R> :
+    T extends object ? DeepFrozenObject<T> :
+    T
 
 type NonObject =
     | null
@@ -12,13 +21,17 @@ type NonObject =
     | bigint
     | AnyFunction
 
-export type Frozen<T> = 
-    T extends NonObject ? T :
-    T extends object ? FrozenObject<T> :
-    T
+type AnyFunction = (...args: unknown[]) => unknown
 
 type FrozenObject<T> = {
     readonly [K in keyof T]: T[K];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface DeepFrozenArray<T> extends ReadonlyArray<DeepFrozen<T>> {}
+
+type DeepFrozenObject<T> = {
+    readonly [K in keyof T]: DeepFrozen<T[K]>;
 }
 
 export function freeze<T>(obj: T): Frozen<T> {
@@ -34,19 +47,6 @@ export function freeze<T>(obj: T): Frozen<T> {
             return new Proxy(obj, mutationHandler) as Frozen<T>;
         }
     }
-}
-
-export type DeepFrozen<T> =
-    T extends NonObject ? T :
-    T extends ReadonlyArray<infer R> ? DeepFrozenArray<R> :
-    T extends object ? DeepFrozenObject<T> :
-    T
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface DeepFrozenArray<T> extends ReadonlyArray<DeepFrozen<T>> {}
-
-type DeepFrozenObject<T> = {
-    readonly [K in keyof T]: DeepFrozen<T[K]>;
 }
 
 export function deepFreeze<T>(obj: T): DeepFrozen<T> {
@@ -83,4 +83,14 @@ function deepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFrozen<T
     }
     Object.freeze(obj);
     return proxyObj;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mutationHandler: ProxyHandler<any> = {
+    set(_, prop, val) {
+        throw ConstConstError.newSetError(prop, val);
+    },
+    deleteProperty(_, prop) {
+        throw ConstConstError.newDeleteError(prop);
+    }
 }
