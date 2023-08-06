@@ -77,10 +77,3 @@ For more information on using Changesets, refer to the [Changesets documentation
 ## What's Next?
 
 In the future release of ConstConst, we have exciting additions planned: `fakeFreeze` and `fakeDeepFreeze` functions. These functions will introduce new capabilities, allowing you to work with immutability-like behavior through `fakeFrozen` objects while retaining controlled modification access via the `proxiedOriginal`. Stay tuned for these upcoming enhancements!
-
----
-
-Big shoutout and thanks to ChatGPT for hooking us up with this awesome README.md file for the ConstConst package – you rock! 🎉
-
-
-And for writing the above^ message too!
