@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "build": "tsc",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "docs": "typedoc src/index.ts --githubPages false",
     "release": "npm run build && npm publish"
   },

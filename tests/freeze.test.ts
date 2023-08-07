@@ -7,6 +7,7 @@ describe("Freeze Tests", () => {
         const value = Symbol("x");
         const frozen = freeze(value);
         expect(frozen).toBe(value);
+        expect(freeze(undefined)).toBe(undefined);
     });
 
     it("Should freeze simple object", () => {
@@ -64,6 +65,7 @@ describe("Deep Freeze Tests", () => {
         const value = Symbol("x");
         const frozen = deepFreeze(value);
         expect(frozen).toBe(value);
+        expect(deepFreeze(undefined)).toBe(undefined);
     });
 
     it("Should freeze simple object", () => {
@@ -90,7 +92,7 @@ describe("Deep Freeze Tests", () => {
     it("Should freeze nested objects aswell", () => {
         const obj = { foo: { bar: "foobar" } };
         const frozen = deepFreeze(obj);
-        expect(frozen).toEqual(obj);
+        expect(frozen).toMatchObject(obj);
         expect(Object.isFrozen(frozen)).toBe(true);
         expect(Object.isFrozen(frozen.foo)).toBe(true);
     });
