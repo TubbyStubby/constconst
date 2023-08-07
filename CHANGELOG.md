@@ -1,5 +1,19 @@
 # constconst
 
+## 2.0.0
+
+### Major Changes
+
+- 2ab3b57: Added fakeFreeze and fakeDeepFreeze
+
+### Minor Changes
+
+- 2ab3b57: Added tests to CI and codecov support
+
+### Patch Changes
+
+- 2ab3b57: Added docs for `fakeFreeze` & `fakeDeepFreeze` and updated warnings and notes
+
 ## 1.0.0
 
 ### Major Changes
