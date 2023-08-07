@@ -1,3 +1,9 @@
+![License](https://img.shields.io/npm/l/constconst)
+![Version](https://img.shields.io/npm/v/constconst)
+![Build Status](https://github.com/TubbyStubby/constconst/actions/workflows/ci.yml/badge.svg)
+![Codecov](https://codecov.io/gh/tubbystubby/constconst/branch/main/graph/badge.svg)
+
+
 # ConstConst
 
 ConstConst is a JavaScript package that provides two functions, `freeze` and `deepFreeze`, which allow you to freeze objects and prevent any mutation. These functions return a proxy that throws an error when attempting to modify or delete any property. The `deepFreeze` function handles circular references properly, ensuring that all nested objects are frozen.
@@ -98,7 +104,8 @@ console.log(frozenObject.prop1.subProp1); // value2
 
 frozenObject.prop1.subProp1 = 'new value'; // ConstConstError: Cannot set property 'prop1' to value 'new value' since object is a constconst
 ```
-> [!NOTE] `fakeFreeze` and `fakeDeepFreeze` do not replace the fields of the original object via proxies. The proxies returned by these functions are configured such that while accessing a property, a proxy of the property is returned.
+> [!NOTE]
+> `fakeFreeze` and `fakeDeepFreeze` do not replace the fields of the original object via proxies. The proxies returned by these functions are configured such that while accessing a property, a proxy of the property is returned.
 
 ## Contribution Guidelines
 
