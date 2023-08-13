@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConstConstError } from "../src/errors";
-import { fakeDeepFreeze, fakeFreeze } from "../src/fakeFreezer";
+import { fakeDeepFreeze, fakeFreeze } from "../src/fakeFreezers";
 
 describe("Freeze Tests", () => {
     it("Should return same value if not a function or object", () => {
