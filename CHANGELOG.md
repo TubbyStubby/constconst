@@ -1,5 +1,11 @@
 # constconst
 
+## 2.0.1
+
+### Patch Changes
+
+- 0613516: fixed fakeFreezer exports
+
 ## 2.0.0
 
 ### Major Changes
