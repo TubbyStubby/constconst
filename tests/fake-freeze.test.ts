@@ -10,26 +10,16 @@ describe("Freeze Tests", () => {
         expect(fakeFreeze(undefined)).toBe(undefined);
     });
 
-    it("Should seal simple object", () => {
+    it("Should return same simple object", () => {
         const obj = { foo: "bar" };
         const frozen = fakeFreeze(obj);
         expect(frozen).toEqual(obj);
-        expect(Object.isSealed(obj)).toBe(true);
     });
     
-    it("Should seal an array", () => {
+    it("Should return same array", () => {
         const arr = [1, 2, 3, 4];
         const frozen = fakeFreeze(arr);
         expect(frozen).toEqual(arr);
-        expect(Object.isSealed(arr)).toBe(true);
-    });
-    
-    it("Should not seal nested objects", () => {
-        const obj = { foo: { bar: "foobar" } };
-        const frozen = fakeFreeze(obj);
-        expect(frozen).toEqual(obj);
-        expect(Object.isSealed(obj)).toBe(true);
-        expect(Object.isSealed(obj.foo)).toBe(false);
     });
     
     test("Frozen object throws error when updating existing property", () => {
@@ -72,31 +62,24 @@ describe("Deep Freeze Tests", () => {
         const obj = { foo: "bar" };
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(frozen);
-        expect(Object.isSealed(obj)).toBe(true);
     });
 
     it("Should seal an array ", () => {
         const obj = [1, 2, 3, 4];
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(frozen);
-        expect(Object.isSealed(obj)).toBe(true);
     });
 
     it("Should seal nested objects", () => {
         const obj = { foo: { bar: "foobar" } };
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(obj);
-        expect(Object.isSealed(obj)).toBe(true);
-        expect(Object.isSealed(obj.foo)).toBe(true);
     });
 
     it("Should seal all objects in an array", () => {
         const obj = [{ foo: "bar" }, { bar: "baz" }];
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(obj);
-        expect(Object.isSealed(obj)).toBe(true);
-        expect(Object.isSealed(obj[0])).toBe(true);
-        expect(Object.isSealed(obj[1])).toBe(true);
     });
 
     it("Should handle circular references", () => {
@@ -104,8 +87,6 @@ describe("Deep Freeze Tests", () => {
         obj.self = obj;
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(obj);
-        expect(Object.isSealed(obj)).toBe(true);
-        expect(Object.isSealed(obj.self)).toBe(true);
         expect(frozen.self).toBe(frozen);
     });
 

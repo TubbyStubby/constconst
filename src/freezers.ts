@@ -4,13 +4,12 @@ import { Frozen, DeepFrozen } from "./frozen-types";
 export function freeze<T>(obj: T): Frozen<T> {
     if(obj == undefined) {
         return obj as Frozen<T>;
-    } else if(typeof obj != "object") {
+    } else if(typeof obj != "object" || obj instanceof Date) {
         return obj as Frozen<T>;
     } else {
         if(Object.isFrozen(obj)) {
             return obj as Frozen<T>;
         } else {
-            Object.freeze(obj);
             return new Proxy(obj, mutationHandler) as Frozen<T>;
         }
     }
@@ -18,14 +17,14 @@ export function freeze<T>(obj: T): Frozen<T> {
 
 export function deepFreeze<T>(obj: T): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object") return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || obj instanceof Date) return obj as DeepFrozen<T>;
     const wm = new WeakMap();
     return deepFreezer(obj, wm);
 }
 
 function deepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object") return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || obj instanceof Date) return obj as DeepFrozen<T>;
     if(Object.isFrozen(obj)) return obj as DeepFrozen<T>;
     let proxyObj;
     if(seenObj.has(obj)) {
@@ -48,7 +47,6 @@ function deepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFrozen<T
             Reflect.set(obj, key, deepFreezer(val, seenObj));
         }
     }
-    Object.freeze(obj);
     return proxyObj;
 }
 

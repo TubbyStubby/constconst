@@ -17,6 +17,7 @@ type NonObject =
     | boolean
     | symbol
     | bigint
+    | Date
     | AnyFunction
 
 type AnyFunction = (...args: unknown[]) => unknown
