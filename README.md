@@ -70,7 +70,7 @@ frozenObject.prop2.prop1 = 'new value'; // ConstConstError: Cannot set property 
 > - Any object which was frozen before passing to `freeze` or `deepFreeze` will be returned as is and will not be proxied either. Hence they will not produce any errors on mutation.
 > - freezing objects with setters and getters is not tested and is undefined behaviour.
 
-- `fakeFreeze`: Seals an object; modifications to the original object reflect in the returned proxy object. Modifications via the proxy trigger an error.
+- `fakeFreeze`: Modifications to the original object reflect in the returned proxy object. Modifications via the proxy trigger an error.
 
 ```javascript
 const { fakeFreeze } = require('constconst');

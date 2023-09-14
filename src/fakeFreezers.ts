@@ -4,10 +4,9 @@ import { Frozen, DeepFrozen } from "./frozen-types";
 export function fakeFreeze<T>(obj: T): Frozen<T> {
     if(obj == undefined) {
         return obj as Frozen<T>;
-    } else if(typeof obj != "object") {
+    } else if(typeof obj != "object" || obj instanceof Date) {
         return obj as Frozen<T>;
     } else {
-        Object.seal(obj);
         return new Proxy(obj, {
             set(_, prop, val) {
                 throw ConstConstError.newSetError(prop, val);
@@ -21,14 +20,14 @@ export function fakeFreeze<T>(obj: T): Frozen<T> {
 
 export function fakeDeepFreeze<T>(obj: T): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object") return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || obj instanceof Date) return obj as DeepFrozen<T>;
     const wm = new WeakMap();
     return fakeDeepFreezer(obj, wm);
 }
 
 function fakeDeepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object") return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || obj instanceof Date) return obj as DeepFrozen<T>;
     let proxyObj;
     if(seenObj.has(obj)) {
         const seenRef = seenObj.get(obj);
@@ -40,7 +39,7 @@ function fakeDeepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFroz
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const val = Reflect.get(target, p);
                 if(val == undefined) return val;
-                if(typeof val != "object") return val;
+                if(typeof val != "object" || val instanceof Date) return val;
                 return seenObj.get(val);
             },
             set(_, prop, val) {
@@ -64,6 +63,5 @@ function fakeDeepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFroz
             fakeDeepFreezer(val, seenObj);
         }
     }
-    Object.seal(obj);
     return proxyObj as DeepFrozen<T>;
 }
