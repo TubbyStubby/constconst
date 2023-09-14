@@ -1,5 +1,11 @@
 # constconst
 
+## 3.0.0
+
+### Major Changes
+
+- c0212c3: Added exception for Date objects and Original objects are no longer frozen or sealed.
+
 ## 2.0.1
 
 ### Patch Changes
