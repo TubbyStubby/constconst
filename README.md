@@ -107,6 +107,9 @@ frozenObject.prop1.subProp1 = 'new value'; // ConstConstError: Cannot set proper
 > [!NOTE]
 > `fakeFreeze` and `fakeDeepFreeze` do not replace the fields of the original object via proxies. The proxies returned by these functions are configured such that while accessing a property, a proxy of the property is returned.
 
+> [!NOTE]
+> Only simple Objects are frozen. Instances of any class is untouched. Best use is with simple POJOs.
+
 ## Contribution Guidelines
 
 To contribute to ConstConst, please follow these guidelines:
