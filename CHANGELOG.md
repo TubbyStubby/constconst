@@ -1,5 +1,11 @@
 # constconst
 
+## 3.0.1
+
+### Patch Changes
+
+- 7fe5994: Fix issues with complex objects freezing.
+
 ## 3.0.0
 
 ### Major Changes
