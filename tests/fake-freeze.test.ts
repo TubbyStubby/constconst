@@ -2,7 +2,7 @@
 import { ConstConstError } from "../src/errors";
 import { fakeDeepFreeze, fakeFreeze } from "../src/fakeFreezers";
 
-describe("Freeze Tests", () => {
+describe("Fake Freeze Tests", () => {
     it("Should return same value if not a function or object", () => {
         const value = Symbol("x");
         const frozen = fakeFreeze(value);
@@ -10,16 +10,12 @@ describe("Freeze Tests", () => {
         expect(fakeFreeze(undefined)).toBe(undefined);
     });
 
-    it("Should return same simple object", () => {
+    it("Should fake freeze a simple object", () => {
         const obj = { foo: "bar" };
         const frozen = fakeFreeze(obj);
         expect(frozen).toEqual(obj);
-    });
-    
-    it("Should return same array", () => {
-        const arr = [1, 2, 3, 4];
-        const frozen = fakeFreeze(arr);
-        expect(frozen).toEqual(arr);
+        const value = "test";
+        expect(() => (frozen as any).foo = value).toThrowError(ConstConstError.newSetError('foo', value));
     });
     
     test("Frozen object throws error when updating existing property", () => {
@@ -50,7 +46,7 @@ describe("Freeze Tests", () => {
     });
 })
 
-describe("Deep Freeze Tests", () => {
+describe("Deep Fake Freeze Tests", () => {
     it("Should return non function and objects", () => {
         const value = Symbol("x");
         const frozen = fakeDeepFreeze(value);
@@ -58,28 +54,30 @@ describe("Deep Freeze Tests", () => {
         expect(fakeDeepFreeze(undefined)).toBe(undefined);
     });
 
-    it("Should seal simple object", () => {
+    it("Should fake freeze simple object", () => {
         const obj = { foo: "bar" };
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(frozen);
+        const value = "test";
+        expect(() => (frozen as any).bar = value).toThrowError(ConstConstError.newSetError('bar', value));
+        obj.foo = "baz";
+        expect(frozen.foo).toBe("baz");
     });
 
-    it("Should seal an array ", () => {
-        const obj = [1, 2, 3, 4];
-        const frozen = fakeDeepFreeze(obj);
+    it("Should fake freeze an array of objects", () => {
+        const arr = [{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }];
+        const frozen = fakeDeepFreeze(arr);
         expect(frozen).toEqual(frozen);
+        const value = "test";
+        expect(() => (frozen as any)[3].b = value).toThrowError(ConstConstError.newSetError('b', value));
     });
 
-    it("Should seal nested objects", () => {
+    it("Should fake freeze nested objects", () => {
         const obj = { foo: { bar: "foobar" } };
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(obj);
-    });
-
-    it("Should seal all objects in an array", () => {
-        const obj = [{ foo: "bar" }, { bar: "baz" }];
-        const frozen = fakeDeepFreeze(obj);
-        expect(frozen).toEqual(obj);
+        const value = "test";
+        expect(() => (frozen as any).foo.baz = value).toThrowError(ConstConstError.newSetError('baz', value));
     });
 
     it("Should handle circular references", () => {
@@ -88,6 +86,8 @@ describe("Deep Freeze Tests", () => {
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(obj);
         expect(frozen.self).toBe(frozen);
+        const value = "test";
+        expect(() => (frozen as any).self.bar = value).toThrowError(ConstConstError.newSetError('bar', value));
     });
 
     test("Frozen object throws error when updating existing property", () => {

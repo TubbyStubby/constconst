@@ -5,7 +5,7 @@ import { isSimpleObject } from "./utils";
 export function freeze<T>(obj: T): Frozen<T> {
     if(obj == undefined) {
         return obj as Frozen<T>;
-    } else if(typeof obj != "object" || !isSimpleObject(obj)) {
+    } else if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Array))) {
         return obj as Frozen<T>;
     } else {
         if(Object.isFrozen(obj)) {
@@ -18,14 +18,14 @@ export function freeze<T>(obj: T): Frozen<T> {
 
 export function deepFreeze<T>(obj: T): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object" || !isSimpleObject(obj)) return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Array))) return obj as DeepFrozen<T>;
     const wm = new WeakMap();
     return deepFreezer(obj, wm);
 }
 
 function deepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object" || !isSimpleObject(obj)) return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Array))) return obj as DeepFrozen<T>;
     if(Object.isFrozen(obj)) return obj as DeepFrozen<T>;
     let proxyObj;
     if(seenObj.has(obj)) {

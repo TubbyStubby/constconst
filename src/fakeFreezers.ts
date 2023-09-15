@@ -5,7 +5,7 @@ import { isSimpleObject } from "./utils";
 export function fakeFreeze<T>(obj: T): Frozen<T> {
     if(obj == undefined) {
         return obj as Frozen<T>;
-    } else if(typeof obj != "object" || !isSimpleObject(obj)) {
+    } else if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Array))) {
         return obj as Frozen<T>;
     } else {
         return new Proxy(obj, {
@@ -21,14 +21,14 @@ export function fakeFreeze<T>(obj: T): Frozen<T> {
 
 export function fakeDeepFreeze<T>(obj: T): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object" || !isSimpleObject(obj)) return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Array))) return obj as DeepFrozen<T>;
     const wm = new WeakMap();
     return fakeDeepFreezer(obj, wm);
 }
 
 function fakeDeepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object" || !isSimpleObject(obj)) return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Array))) return obj as DeepFrozen<T>;
     let proxyObj;
     if(seenObj.has(obj)) {
         const seenRef = seenObj.get(obj);
@@ -40,7 +40,7 @@ function fakeDeepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFroz
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const val = Reflect.get(target, p);
                 if(val == undefined) return val;
-                if(typeof val != "object" || !isSimpleObject(val)) return val;
+                if(typeof val != "object" || (!isSimpleObject(val) && !(val instanceof Array))) return val;
                 return seenObj.get(val);
             },
             set(_, prop, val) {

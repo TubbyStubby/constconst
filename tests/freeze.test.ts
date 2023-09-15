@@ -14,12 +14,8 @@ describe("Freeze Tests", () => {
         const obj = { foo: "bar" };
         const frozen = freeze(obj);
         expect(frozen).toEqual(obj);
-    });
-    
-    it("Should freeze an array", () => {
-        const arr = [1, 2, 3, 4];
-        const frozen = freeze(arr);
-        expect(frozen).toEqual(arr);
+        const value = "test";
+        expect(() => (frozen as any).foo = value).toThrowError(ConstConstError.newSetError('foo', value));
     });
     
     it("Should not freeze nested objects", () => {
@@ -68,12 +64,16 @@ describe("Deep Freeze Tests", () => {
         const obj = { foo: "bar" };
         const frozen = deepFreeze(obj);
         expect(frozen).toEqual(frozen);
+        const value = "test";
+        expect(() => (frozen as any).foo = value).toThrowError(ConstConstError.newSetError('foo', value));
     });
 
     it("Should freeze an array ", () => {
-        const obj = [1, 2, 3, 4];
-        const frozen = deepFreeze(obj);
+        const arr = [{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }];
+        const frozen = deepFreeze(arr);
         expect(frozen).toEqual(frozen);
+        const value = "test";
+        expect(() => (frozen as any)[1].b = value).toThrowError(ConstConstError.newSetError('b', value));
     });
 
     it('Should return original object if its already frozen', () => {
