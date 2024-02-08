@@ -1,6 +1,7 @@
 export enum ConstConstErrorCodes {
     SET_ERROR,
-    DELETE_ERROR
+    DELETE_ERROR,
+    CLEAR_ERROR
 }
 
 export class ConstConstError extends Error {
@@ -12,6 +13,24 @@ export class ConstConstError extends Error {
     
     static newDeleteError(property: unknown) {
         const message = `Cannot delete property '${property}' since object is a constconst`;
+        const error = new ConstConstError(message, ConstConstErrorCodes.DELETE_ERROR);
+        return error;
+    }
+
+    static newMapClearError () {
+        const message = `Cannot clear properties since map is a constconst`;
+        const error = new ConstConstError(message, ConstConstErrorCodes.DELETE_ERROR);
+        return error;
+    }
+
+    static newMapSetError() {
+        const message = `Cannot set property since map is a constconst`;
+        const error = new ConstConstError(message, ConstConstErrorCodes.SET_ERROR);
+        return error;
+    }
+
+    static newMapDeleteError() {
+        const message = `Cannot delete property since map is a constconst`;
         const error = new ConstConstError(message, ConstConstErrorCodes.DELETE_ERROR);
         return error;
     }
