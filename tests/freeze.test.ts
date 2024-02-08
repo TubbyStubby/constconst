@@ -9,6 +9,12 @@ describe("Freeze Tests", () => {
         expect(freeze(undefined)).toBe(undefined);
     });
 
+    it ("should keep set untouched", () => {
+        const sample = new Set([1,2,3,4]);
+        const frozen = freeze(sample);
+        expect(frozen).toBe(sample);
+    })
+
     it("Should freeze simple object", () => {
         const obj = { foo: "bar" };
         const frozen = freeze(obj);
@@ -133,6 +139,12 @@ describe("Deep Freeze Tests", () => {
         const frozen = deepFreeze(obj);
         expect(frozen).toEqual(obj);
         expect(frozen.self).toBe(frozen);
+    });
+
+    it("Should handle nested undefined", () => {
+        const obj: any = { foo: "bar", baz: undefined };
+        const frozen = deepFreeze(obj);
+        expect(frozen).toEqual(obj);
     });
 
     it ("Should deepfreeze a map", () => {

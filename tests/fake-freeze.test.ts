@@ -15,14 +15,32 @@ describe("Fake Freeze Tests", () => {
         const frozen = fakeFreeze(obj);
         expect(frozen).toEqual(obj);
         const value = "test";
-        expect(() => (frozen as any).foo = value).toThrowError(ConstConstError.newSetError('foo', value));
+        expect(() => (frozen as any).foo = value).toThrow(ConstConstError.newSetError('foo', value));
+    });
+
+    it ("should keep set untouched", () => {
+        const sample = new Set([1,2,3,4]);
+        const frozen = fakeFreeze(sample);
+        expect(frozen).toBe(sample);
+    })
+
+    it ("Should fake freeze a map", () => {
+        const map = new Map<any, any>([
+            ["foo", "bar"], 
+            ["foo_1", {"bar_1": "baz"}]
+        ]);
+        const frozen = fakeFreeze(map);
+        expect(frozen.size).toBe(map.size);
+        for (let key of map.keys()) {
+            expect(frozen.get(key)).toBe(map.get(key));
+        }
     });
     
     test("Frozen object throws error when updating existing property", () => {
         const obj = { foo: "bar" };
         const frozen = fakeFreeze(obj);
         const value = "baz";
-        expect(() => (frozen.foo as any) = value).toThrowError(ConstConstError.newSetError('foo', value));
+        expect(() => (frozen.foo as any) = value).toThrow(ConstConstError.newSetError('foo', value));
     });
     
     test("Frozen object reflects changes made to original", () => {
@@ -35,15 +53,34 @@ describe("Fake Freeze Tests", () => {
     test("Frozen object throws error when deleting a property", () => {
         const obj = { foo: "bar" };
         const frozen = fakeFreeze(obj);
-        expect(() => delete (frozen as any).foo).toThrowError(ConstConstError.newDeleteError('foo'));
+        expect(() => delete (frozen as any).foo).toThrow(ConstConstError.newDeleteError('foo'));
     });
     
     test("Frozen object throws error when adding new property", () => {
         const obj = { foo: "bar" };
         const frozen = fakeFreeze(obj);
         const value = "foobar";
-        expect(() => (frozen as any).baz = value).toThrowError(ConstConstError.newSetError('baz', value));
+        expect(() => (frozen as any).baz = value).toThrow(ConstConstError.newSetError('baz', value));
     });
+
+    test("Frozen map throws error when setting property", () => {
+        const map = new Map([["foo", "bar"], ["foo_1", "bar_1"]]);
+        const frozen = fakeFreeze(map);
+        const value_to_set = "something_different";
+        expect(() => frozen.set("foo", value_to_set)).toThrow(ConstConstError.newMapSetError());
+    })
+
+    test("Frozen map throws error when deleting property", () => {
+        const map = new Map([["foo", "bar"], ["foo_1", "bar_1"]]);
+        const frozen = fakeFreeze(map);
+        expect(() => frozen.delete("foo")).toThrow(ConstConstError.newMapDeleteError());
+    })
+
+    test("Frozen map throws error when clearing property", () => {
+        const map = new Map([["foo", "bar"], ["foo_1", "bar_1"]]);
+        const frozen = fakeFreeze(map);
+        expect(() => frozen.clear()).toThrow(ConstConstError.newMapClearError());
+    })
 })
 
 describe("Deep Fake Freeze Tests", () => {
@@ -59,7 +96,7 @@ describe("Deep Fake Freeze Tests", () => {
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(frozen);
         const value = "test";
-        expect(() => (frozen as any).bar = value).toThrowError(ConstConstError.newSetError('bar', value));
+        expect(() => (frozen as any).bar = value).toThrow(ConstConstError.newSetError('bar', value));
         obj.foo = "baz";
         expect(frozen.foo).toBe("baz");
     });
@@ -69,7 +106,7 @@ describe("Deep Fake Freeze Tests", () => {
         const frozen = fakeDeepFreeze(arr);
         expect(frozen).toEqual(frozen);
         const value = "test";
-        expect(() => (frozen as any)[3].b = value).toThrowError(ConstConstError.newSetError('b', value));
+        expect(() => (frozen as any)[3].b = value).toThrow(ConstConstError.newSetError('b', value));
     });
 
     it("Should fake freeze nested objects", () => {
@@ -77,7 +114,7 @@ describe("Deep Fake Freeze Tests", () => {
         const frozen = fakeDeepFreeze(obj);
         expect(frozen).toEqual(obj);
         const value = "test";
-        expect(() => (frozen as any).foo.baz = value).toThrowError(ConstConstError.newSetError('baz', value));
+        expect(() => (frozen as any).foo.baz = value).toThrow(ConstConstError.newSetError('baz', value));
     });
 
     it("Should handle circular references", () => {
@@ -87,14 +124,34 @@ describe("Deep Fake Freeze Tests", () => {
         expect(frozen).toEqual(obj);
         expect(frozen.self).toBe(frozen);
         const value = "test";
-        expect(() => (frozen as any).self.bar = value).toThrowError(ConstConstError.newSetError('bar', value));
+        expect(() => (frozen as any).self.bar = value).toThrow(ConstConstError.newSetError('bar', value));
+    });
+
+    it("Should handle nested undefined", () => {
+        const obj: any = { foo: "bar", baz: undefined };
+        const frozen = fakeDeepFreeze(obj);
+        expect(frozen).toEqual(obj);
+    });
+
+    it ("Should fakedeepfreeze a map", () => {
+        const map = new Map<any, any>([
+            ["foo", "bar"], 
+            ["foo_1", {"bar_1": "baz"}]
+        ]);
+        const frozen = fakeDeepFreeze(map);
+        expect(frozen.size).toBe(map.size);
+        for (let key of map.keys()) {
+            expect(frozen.get(key)).toBe(map.get(key));
+        }
+
+        expect(() => frozen.get("foo_1")["bar_1"] = "something").toThrow(ConstConstError.newSetError("bar_1", "something"));
     });
 
     test("Frozen object throws error when updating existing property", () => {
         const obj = { foo: "bar" };
         const frozen = fakeDeepFreeze(obj);
         const value = "baz";
-        expect(() => (frozen.foo as any) = value).toThrowError(ConstConstError.newSetError('foo', value));
+        expect(() => (frozen.foo as any) = value).toThrow(ConstConstError.newSetError('foo', value));
     });
     
     test("Frozen object reflects changes made to original", () => {
@@ -114,13 +171,44 @@ describe("Deep Fake Freeze Tests", () => {
     test("Frozen object throws error when deleting a property", () => {
         const obj = { foo: "bar" };
         const frozen = fakeDeepFreeze(obj);
-        expect(() => delete (frozen as any).foo).toThrowError(ConstConstError.newDeleteError('foo'));
+        expect(() => delete (frozen as any).foo).toThrow(ConstConstError.newDeleteError('foo'));
     });
 
     test("Frozen object throws error when adding new property", () => {
         const obj = { foo: "bar" };
         const frozen = fakeDeepFreeze(obj);
         const value = "baz";
-        expect(() => (frozen as any).bar = value).toThrowError(ConstConstError.newSetError('bar', value));
+        expect(() => (frozen as any).bar = value).toThrow(ConstConstError.newSetError('bar', value));
     });
+
+    test("DeepFrozen map throws error when setting property at any level", () => {
+        const map = new Map<any, any>([
+            ["foo", "bar"], 
+            ["foo_1", {"bar_1": "baz"}]
+        ]);
+        const frozen = fakeDeepFreeze(map);
+        const value_to_set = "something_different";
+        expect(() => frozen.set("foo", value_to_set)).toThrow(ConstConstError.newMapSetError());
+        expect(() => frozen.get("foo_1")["bar_1"] = "something").toThrow(ConstConstError.newSetError("bar_1", "something"));
+    })
+
+    test("DeepFrozen map throws error when deleting property", () => {
+        const map = new Map<any, any>([
+            ["foo", "bar"], 
+            ["foo_1", {"bar_1": "baz"}]
+        ]);
+        const frozen = fakeDeepFreeze(map);
+        expect(() => frozen.delete("foo")).toThrow(ConstConstError.newMapDeleteError());
+        expect(() => delete frozen.get("foo_1")["bar_1"]).toThrow(ConstConstError.newDeleteError("bar_1"));
+        
+    })
+
+    test("DeepFrozen map throws error when clearing property", () => {
+        const map = new Map<any, any>([
+            ["foo", "bar"], 
+            ["foo_1", {"bar_1": "baz"}]
+        ]);
+        const frozen = fakeDeepFreeze(map);
+        expect(() => frozen.clear()).toThrow(ConstConstError.newMapClearError());
+    })
 })

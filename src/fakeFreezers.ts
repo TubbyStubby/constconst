@@ -6,7 +6,7 @@ import { mutationHandler, mapMutationHandler } from "./handlers";
 export function fakeFreeze<T>(obj: T): Frozen<T> {
     if(obj == undefined) {
         return obj as Frozen<T>;
-    } else if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Array))) {
+    } else if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Map) && !(obj instanceof Array))) {
         return obj as Frozen<T>;
     } else if (obj instanceof Map) {
         return new Proxy(obj, mapMutationHandler) as Frozen<T>;
@@ -31,7 +31,7 @@ export function fakeDeepFreeze<T>(obj: T): DeepFrozen<T> {
 
 function fakeDeepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFrozen<T> {
     if(obj == undefined) return obj as DeepFrozen<T>;
-    if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Array))) return obj as DeepFrozen<T>;
+    if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Map) && !(obj instanceof Array))) return obj as DeepFrozen<T>;
     let proxyObj;
     if(seenObj.has(obj)) {
         const seenRef = seenObj.get(obj);
@@ -66,7 +66,7 @@ function fakeDeepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFroz
     } else if (obj instanceof Map) {
         const keys = obj.keys();
         for(const [key, val] of obj.entries()) {
-            Reflect.set(obj, key, fakeDeepFreezer(val, seenObj));
+            obj.set(key, fakeDeepFreezer(val, seenObj));
         }
     } else {
         const keys = Reflect.ownKeys(obj);

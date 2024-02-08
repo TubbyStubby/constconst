@@ -1,4 +1,3 @@
-import { ConstConstError } from "./errors"
 import { Frozen, DeepFrozen } from "./frozen-types";
 import { isSimpleObject } from "./utils";
 import { mutationHandler, mapMutationHandler } from "./handlers";
