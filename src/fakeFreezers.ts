@@ -1,7 +1,7 @@
 import { ConstConstError } from "./errors"
 import { Frozen, DeepFrozen } from "./frozen-types";
 import { isSimpleObject } from "./utils";
-import { mutationHandler, mapMutationHandler } from "./handlers";
+import { mapMutationHandler } from "./handlers";
 
 export function fakeFreeze<T>(obj: T): Frozen<T> {
     if(obj == undefined) {
@@ -64,7 +64,6 @@ function fakeDeepFreezer<T>(obj: T, seenObj: WeakMap<object, unknown>): DeepFroz
             fakeDeepFreezer(val, seenObj);
         }
     } else if (obj instanceof Map) {
-        const keys = obj.keys();
         for(const [key, val] of obj.entries()) {
             obj.set(key, fakeDeepFreezer(val, seenObj));
         }

@@ -13,6 +13,9 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
-    ]
+        "@typescript-eslint"    
+    ],
+    "rules": {
+        "@typescript-eslint/no-explicit-any": ["off"]
+    }
 }

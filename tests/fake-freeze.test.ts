@@ -31,7 +31,7 @@ describe("Fake Freeze Tests", () => {
         ]);
         const frozen = fakeFreeze(map);
         expect(frozen.size).toBe(map.size);
-        for (let key of map.keys()) {
+        for (const key of map.keys()) {
             expect(frozen.get(key)).toBe(map.get(key));
         }
     });
@@ -140,7 +140,7 @@ describe("Deep Fake Freeze Tests", () => {
         ]);
         const frozen = fakeDeepFreeze(map);
         expect(frozen.size).toBe(map.size);
-        for (let key of map.keys()) {
+        for (const key of map.keys()) {
             expect(frozen.get(key)).toBe(map.get(key));
         }
 

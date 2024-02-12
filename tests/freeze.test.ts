@@ -43,7 +43,7 @@ describe("Freeze Tests", () => {
         ]);
         const frozen = freeze(map);
         expect(frozen.size).toBe(map.size);
-        for (let key of map.keys()) {
+        for (const key of map.keys()) {
             expect(frozen.get(key)).toBe(map.get(key));
         }
 
@@ -154,7 +154,7 @@ describe("Deep Freeze Tests", () => {
         ]);
         const frozen = deepFreeze(map);
         expect(frozen.size).toBe(map.size);
-        for (let key of map.keys()) {
+        for (const key of map.keys()) {
             expect(frozen.get(key)).toBe(map.get(key));
         }
 
