@@ -1,5 +1,11 @@
 # constconst
 
+## 3.2.1
+
+### Patch Changes
+
+- 8bd54bd: Fix linter issues and updated @typescript-eslint
+
 ## 3.2.0
 
 ### Minor Changes
