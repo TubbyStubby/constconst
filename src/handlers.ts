@@ -10,19 +10,18 @@ export const mutationHandler: ProxyHandler<any> = {
 }
 
 export const mapMutationHandler: ProxyHandler<any> = {
-    get (tgt, prop, rcvr) {
-        if (prop === "size") {
-            return tgt.size;
-        }
-        let val = Reflect.get(tgt, prop, rcvr);
-        if (prop === "set" && typeof val === "function") {
+    get (tgt, prop) {
+        let val = Reflect.get(tgt, prop);
+        if (prop === "set") {
             throw ConstConstError.newMapSetError();
-        } else if (prop === "clear" && typeof val === "function") {
+        } else if (prop === "clear") {
             throw ConstConstError.newMapClearError();
-        } else if (prop === "delete" && typeof val === "function") {
+        } else if (prop === "delete") {
             throw ConstConstError.newMapDeleteError();
         }  else if (typeof val === "function") {
             val = val.bind(tgt);
+            return val;
+        } else {
             return val;
         }
     }
