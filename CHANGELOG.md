@@ -3,6 +3,9 @@
 
 ###Feature Addition
 * Added support for Maps.
+
+###Minor Changes
+* `@types/jest` bumped up from `v29.5.2` to `v29.5.12`
   
 
 ## 3.0.1
