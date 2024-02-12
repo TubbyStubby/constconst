@@ -1,4 +1,9 @@
 # constconst
+## 3.1.0
+
+###Feature Addition
+* Added support for Maps.
+  
 
 ## 3.0.1
 

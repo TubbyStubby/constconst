@@ -13,6 +13,10 @@ Unveiling an exciting new update to the ConstConst – the introduction of `fake
 
 These functions augment your toolkit for immutability-like behavior while allowing controlled modification access.
 
+***Note:*** As of `v3.1.0` usage of `fakeFreeze` and `fakeDeepFreeze` is hereby disencouraged and they might be removed in future versions subject to failure of finding any significant difference with the respective non fake  varients.
+
+Refer to [`CHANGELOG.md`](CHANGELOG.md) for detailed changes.
+
 ## Motivation
 
 The main motivation behind ConstConst is to simplify the usage of constant information within modules. For example, when working with game development, you may have modules that store constant stats for characters or other game entities. With ConstConst, you can export and use these constant objects without the need for deep cloning them every time.
@@ -39,9 +43,18 @@ const myObject = {
   prop2: 'value2'
 };
 
+const myMap = new Map([
+  "prop1", "value1",
+  "prop2": "value2"
+]);
+
 const frozenObject = freeze(myObject);
+const frozenMap = freeze(myMap);
 
 frozenObject.prop1 = 'new value'; // ConstConstError: Cannot set property 'prop1' to value 'new value' since object is a constconst
+frozenMap.set("prop1", "value3"); //ConstConstError: Cannot set property since map is a constconst
+frozenMap.clear(); //ConstConstError: Cannot clear properties since map is a constconst
+frozenMap.delete("prop1"); //ConstConstError: Cannot delete property since map is a constconst
 ```
 
 - `deepFreeze`: similar to freeze but recursively freezes nested objects
@@ -56,13 +69,21 @@ const obj1 = {
 const obj2 = {
   prop2: obj1
 };
+const myMap = new Map([
+  "prop1", "value1",
+  "prop2": {
+    "innerProp": "value2"
+  }
+]);
 
 obj1.prop2 = obj2;
 
 const frozenObject = deepFreeze(obj1);
-
+const frozenMap = deepFreeze(myMap);
 frozenObject.prop2.prop1 = 'new value'; // ConstConstError: Cannot set property 'prop1' to value 'new value' since object is a constconst
+frozenMap.get("prop2").innerProp = "value3"; //// ConstConstError: Cannot set property 'prop1' to value 'new value' since object is a constconst
 ```
+
 > [!WARNING]
 > `deepFreeze` function operates by modifying the fields of the passed object, replacing them with proxies to enforce immutability. To ensure the safest usage of this function, it's recommended to directly freeze the object without saving any reference to it in a variable.
 
