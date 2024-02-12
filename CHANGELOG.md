@@ -1,12 +1,26 @@
 # constconst
+
+## 3.2.0
+
+### Minor Changes
+
+- 6541191: Support for maps
+
+  `freeze` and `deepFreeze` now support `Map`.
+
+  Maps in JavaScript work differently than an object due to its access to internal storage. Hence the way to proxy them also needed to be changed.
+
+  Also `fakeFreeze` and `fakeDeepFreeze` seems very redundant.
+
 ## 3.1.0
 
 ###Feature Addition
-* Added support for Maps.
+
+- Added support for Maps.
 
 ###Minor Changes
-* `@types/jest` bumped up from `v29.5.2` to `v29.5.12`
-  
+
+- `@types/jest` bumped up from `v29.5.2` to `v29.5.12`
 
 ## 3.0.1
 
