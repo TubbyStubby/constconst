@@ -1,5 +1,11 @@
 # constconst
 
+## 3.3.0
+
+### Minor Changes
+
+- 636ea32: Added env flag `CONST_CONST_SKIP` to turns off the checks for performance.
+
 ## 3.2.1
 
 ### Patch Changes
