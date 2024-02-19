@@ -6,22 +6,19 @@
 
 # ConstConst
 
-ConstConst is a JavaScript package that provides two functions, `freeze` and `deepFreeze`, which allow you to freeze objects and prevent any mutation. These functions return a proxy that throws an error when attempting to modify or delete any property. The `deepFreeze` function handles circular references properly, ensuring that all nested objects are frozen.
-
-## New: `fakeFreeze` and `fakeDeepFreeze`
-Unveiling an exciting new update to the ConstConst – the introduction of `fakeFreeze` and `fakeDeepFreeze` functions. This expansion provides enhanced flexibility while adhering to the core principles of immutability with controlled modification.
+ConstConst is a JavaScript package that provides two functions, `freeze` and `deepFreeze`, which allow you to freeze objects and prevent any mutation. These functions return a proxy that throws an error when attempting to modify or delete any property. The `deepFreeze` function handles circular references properly, ensuring that all nested objects are frozen. Another set of function `fakeFreeze` and `fakeDeepFreeze` provide functionality to do updates via the original object reference.
 
 These functions augment your toolkit for immutability-like behavior while allowing controlled modification access.
-
-***Note:*** As of `v3.1.0` usage of `fakeFreeze` and `fakeDeepFreeze` is hereby disencouraged and they might be removed in future versions subject to failure of finding any significant difference with the respective non fake  varients.
-
-Refer to [`CHANGELOG.md`](CHANGELOG.md) for detailed changes.
 
 ## Motivation
 
 The main motivation behind ConstConst is to simplify the usage of constant information within modules. For example, when working with game development, you may have modules that store constant stats for characters or other game entities. With ConstConst, you can export and use these constant objects without the need for deep cloning them every time.
 
 By freezing the objects, you ensure that their values remain unchanged throughout the execution of your code. This provides immutability and prevents accidental modifications that could lead to bugs or unexpected behavior.
+
+## Beta
+
+Since this lib is aimed towards performance, and accessing anything via proxies is comparitively slow, you can set env variable `CONST_CONST_SKIP` to `1` to turn off the proxying. Idea is to turn off the safety checks in production once it is thoroughly tested in development.
 
 ## Installation
 
@@ -108,7 +105,7 @@ console.log(frozenObject.prop1) // value2
 frozenObject.prop1 = 'new value'; // ConstConstError: Cannot set property 'prop1' to value 'new value' since object is a constconst
 ```
 
-- `fakeDeepFreeze`: Extends fakeFreeze capabilities to nested object also handles circular references. Object sealing remains consistent.
+- `fakeDeepFreeze`: Extends fakeFreeze capabilities to nested object also handles circular references.
 ```javascript
 const { fakeDeepFreeze } = require('constconst');
 
