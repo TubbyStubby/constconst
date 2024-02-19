@@ -1,9 +1,10 @@
 import { ConstConstError } from "./errors"
 import { Frozen, DeepFrozen } from "./frozen-types";
-import { isSimpleObject } from "./utils";
+import { turnOffProxy, isSimpleObject } from "./utils";
 import { mapMutationHandler } from "./handlers";
 
 export function fakeFreeze<T>(obj: T): Frozen<T> {
+    if (turnOffProxy()) return obj as Frozen<T>;
     if(obj == undefined) {
         return obj as Frozen<T>;
     } else if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Map) && !(obj instanceof Array))) {
@@ -23,6 +24,7 @@ export function fakeFreeze<T>(obj: T): Frozen<T> {
 }
 
 export function fakeDeepFreeze<T>(obj: T): DeepFrozen<T> {
+    if (turnOffProxy()) return obj as DeepFrozen<T>;
     if(obj == undefined) return obj as DeepFrozen<T>;
     if(typeof obj != "object" || (!isSimpleObject(obj) && !(obj instanceof Map) && !(obj instanceof Array))) return obj as DeepFrozen<T>;
     const wm = new WeakMap();
